@@ -80,3 +80,4 @@ arch/arm/boot/compressed/piggy.gzip
 *.orig
 *~
 \#*#
+arch/arm/boot/compressed
