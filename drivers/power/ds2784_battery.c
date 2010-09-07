@@ -445,11 +445,15 @@ static int battery_adjust_charge_state(struct ds2784_device_info *di)
 	/* shut off charger when full:
 	 * - CHGTF flag is set
 	 */
-	if (di->status.status_reg & 0x80) {
+	if (di->status.percentage < 99) 
+		di->status.battery_full = 0;
+
+	if ((di->status.status_reg & 0x80) &&
+	   ((di->status.current_avg_uA/1000) <= 40) &&
+	   (di->status.percentage == 100)) {
 		di->status.battery_full = 1;
 		charge_mode = CHARGE_BATT_DISABLE;
-	} else
-		di->status.battery_full = 0;
+	}
 
 	if (temp >= TEMP_HOT) {
 		if (temp >= TEMP_CRITICAL)
@@ -473,7 +477,7 @@ static int battery_adjust_charge_state(struct ds2784_device_info *di)
 			charge_mode = CHARGE_BATT_DISABLE;
 	}
 
-	if (di->status.current_uA > 1024)
+	if (di->status.battery_full == 1)
 		di->last_charge_seen = di->last_poll;
 	else if (di->last_charge_mode != CHARGE_OFF &&
 		 check_timeout(di->last_poll, di->last_charge_seen, 60 * 60)) {
