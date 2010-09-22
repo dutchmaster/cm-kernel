@@ -342,7 +342,7 @@ int acpuclk_set_rate(unsigned long rate, int for_power_collapse)
 		if (rc) {
 			printk(KERN_ERR
 				"acpuclock: Unable to increase ACPU "
-				"vdd.\n");
+				"vdd: %d.\n", (int) rate);
 			mutex_unlock(&drv_state.lock);
 			return rc;
 		}
@@ -391,7 +391,7 @@ int acpuclk_set_rate(unsigned long rate, int for_power_collapse)
 		rc = avs_adjust_freq(freq_index, 0);
 		if (rc)
 			printk(KERN_ERR
-				"acpuclock: Unable to drop ACPU vdd.\n");
+				"acpuclock: Unable to drop ACPU vdd: %d.\n", (int) rate);
 #endif
 		/* Drop VDD level if we can. */
 		if (next->vdd < cur->vdd) {
